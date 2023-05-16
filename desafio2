@@ -1,98 +1,98 @@
 const fs = require('fs');
 
 class Product {
-    static idCounter = 1;
+  static idCounter = 1;
 
-    constructor(title, description, price, thumbnail, code, stock){
-        this.title = title;
-        this.description = description;
-        this.price = price;
-        this.thumbnail = thumbnail;
-        this.code = code;
-        this.stock = stock;
-        this.id = Product.idCounter++;
-    }
+  constructor(title, description, price, thumbnail, code, stock){
+    this.title = title;
+    this.description = description;
+    this.price = price;
+    this.thumbnail = thumbnail;
+    this.code = code;
+    this.stock = stock;
+    this.id = Product.idCounter++;
+  }
 }
 
 class ProductManager {
 
-    constructor(path){
+  constructor(path){
+    this.products = [];
+    this.path = path;
+    this.loadProductsFromFile();
+  }
+
+  async loadProductsFromFile() {
+    try {
+      const data = await fs.promises.readFileSync(this.path, 'utf-8');
+      this.products = JSON.parse(data);
+    } catch (error) {
+        console.error('Error reading products file:', error);
         this.products = [];
-        this.path = path;
-        this.loadProductsFromFile();
+     }
+  }
+
+  async saveProductsToFile() {
+    try {
+      const data = JSON.stringify(this.products);
+      await fs.promises.writeFileSync(this.path, data, 'utf-8');
+    } catch (error) {
+        console.error('Error writing products file:', error);
+      }
+  }
+
+  addProduct(title, description, price, thumbnail, code, stock){
+    const newProduct = new Product (title, description, price, thumbnail, code, stock)
+    if(!this.products.find(product => product.code === newProduct.code)){
+        this.products.push(newProduct);
+        this.saveProductsToFile();
     }
+  }
 
-    loadProductsFromFile() {
-        try {
-          const data = fs.readFileSync(this.path, 'utf-8');
-          this.products = JSON.parse(data);
-        } catch (error) {
-          console.error('Error reading products file:', error);
-          this.products = [];
-        }
+  getProducts () {
+    try {
+      const data = fs.readFileSync(this.path, 'utf-8');
+      return JSON.parse(data);
+    } catch (error) {
+        console.error('Error reading products file:', error);
+        return [];
       }
+  }
 
-    saveProductsToFile() {
-        try {
-          const data = JSON.stringify(this.products);
-          fs.writeFileSync(this.path, data, 'utf-8');
-        } catch (error) {
-          console.error('Error writing products file:', error);
-        }
+  getProductById(id) {
+    this.loadProductsFromFile();
+    const product = this.products.find((product) => product.id === id);
+    if (product) {
+      return product;
+    } else {
+        console.error('Product not found');
+        return null;
       }
+  }
 
-    addProduct(title, description, price, thumbnail, code, stock){
-        const newProduct = new Product (title, description, price, thumbnail, code, stock)
-        if(!this.products.find(product => product.code === newProduct.code)){
-            this.products.push(newProduct);
-            this.saveProductsToFile();
-        }
-    }
-
-    getProducts () {
-        try {
-          const data = fs.readFileSync(this.path, 'utf-8');
-          return JSON.parse(data);
-        } catch (error) {
-          console.error('Error reading products file:', error);
-          return [];
-        }
+  updateProduct(id, update) {
+    const product = this.products.find((product) => product.id === id);
+    if (product) {
+      Object.assign(product, update);
+      this.saveProductsToFile();
+      return product;
+    } else {
+        console.error('Product not found');
+        return null;
       }
+  }
 
-      getProductById(id) {
-        this.loadProductsFromFile();
-        const product = this.products.find((product) => product.id === id);
-        if (product) {
-          return product;
-        } else {
-            console.error('Product not found');
-            return null;
-        }
+  deleteProduct(id) {
+    const index = this.products.findIndex((product) => product.id === id);
+    if (index > 0) {
+      this.products.splice(index, 1);
+      this.saveProductsToFile();
+      return this.products;
+    } else {
+        console.error('Product not found');
+        return this.products;
       }
-
-    updateProduct(id, update) {
-        const product = this.products.find((product) => product.id === id);
-        if (product) {
-          Object.assign(product, update);
-          this.saveProductsToFile();
-          return product;
-        } else {
-            console.error('Product not found');
-            return null;
-        }
-      }
-
-      deleteProduct(id) {
-        const index = this.products.findIndex((product) => product.id === id);
-        if (index > 0) {
-            this.products.splice(index, 1);
-            this.saveProductsToFile();
-            return this.products;
-        } else {
-            console.error('Product not found');
-            return this.products;
-        }
-      }
+  }
 }
 
 const productManager = new ProductManager('./ruta.txt');
@@ -108,3 +108,4 @@ console.log(productManager.getProducts());
 console.log(productManager.getProductById(1));
 
 console.log(productManager.deleteProduct(2));
+
