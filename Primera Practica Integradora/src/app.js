@@ -13,6 +13,7 @@ const PORT = 8080;
 const app = express();
 const serverHttp = app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
 const io = new Server(serverHttp);
+const messages = [];
 
 const MONGO = 'mongodb+srv://sfalconi:geccia@cluster0.j9zkkpu.mongodb.net/?retryWrites=true&w=majority';
 const connection = mongoose.connect(MONGO);
