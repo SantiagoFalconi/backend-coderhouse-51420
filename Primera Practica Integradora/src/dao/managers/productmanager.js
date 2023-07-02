@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-class Product {
+export class Product {
   static idCounter = 1;
 
   constructor(title, description, price, thumbnail, code, stock, status, category){

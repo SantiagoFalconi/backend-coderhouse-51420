@@ -1,12 +1,11 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Listado de Productos en Tiempo Real</title>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="../public/indexrealtimeproducts.js"></script> 
-  </head>
-  <body>
-    <h1>Listado de Productos en Tiempo Real</h1>
-    <ul id="product-list"></ul>
-  </body>
-</html>
+<div id="productList">
+    {{#each products}}
+            <h3>{{this.title}}</h3>
+            <li>descripcion: {{this.description}}</li>
+            <li>precio: {{this.price}}</li>
+            <li>codigo: {{this.code}}</li>
+            <li>stock: {{this.stock}}</li>
+    {{/each}}
+</div>   
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/indexrealtimeproducts.js"></script>
