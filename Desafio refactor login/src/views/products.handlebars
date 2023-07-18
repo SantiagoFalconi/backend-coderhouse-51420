@@ -1,0 +1,35 @@
+<div>
+    <h2>Bienvenido! {{userData.name}}</h2>
+    <li>
+        {{#if userData.admin}} 
+        Rol:
+        <input type="checkbox" checked disabled> Admin
+        <input type="checkbox" disabled> Usuario
+        {{else}}
+        Rol:
+        <input type="checkbox" disabled> Admin
+        <input type="checkbox" checked disabled> Usuario
+        {{/if}}
+    </li>
+    <p>email: {{userData.email}}</p>
+    <p>age: {{userData.age}}</p>
+    <a href="/logout"><button>Cerrar Sesión</button></a>
+</div>
+
+<h1>Lista de Productos</h1>
+    <ul>
+        {{#each products}}
+        <li>
+            <h2>{{this.title}}</h2>
+            <p>Descripción: {{this.description}}</p>
+            <p>Precio: {{this.price}}</p>
+            <p>Categoría: {{this.category}}</p>
+            <p>Status: {{this.status}}</p>
+            <p>Código: {{this.code}}</p>
+            <p>Stock: {{this.stock}}</p>
+            <a href="/carts/{{cartId}}/add/{{this._id}}">Agregar al Carrito</a>
+        </li>
+        {{/each}}
+    </ul>
+</body>
+</html>
